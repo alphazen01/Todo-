@@ -45,8 +45,20 @@ CREATE TABLE customer(
     return taskList;
   }
 
-  Future<int> deleteCustomer(int id) async {
+  Future<int> deleteTask(int id) async {
     Database db = await instance.database;
     return await db.delete("customer", where: "id=?", whereArgs: [id]);
   }
+  Future<int>updateTask(CustomerModel customerModel)async{
+    Database db=await instance.database;
+    return await db.update("customer", customerModel.toMap(),
+    where: "id=?",
+    whereArgs: [customerModel.id]
+    );
+  }
+
+
+
+
+
 }
