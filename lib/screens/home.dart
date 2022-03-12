@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:todo/database_helper.dart';
 import 'package:todo/screens/task_page.dart';
 import 'package:todo/screens/widget.dart';
-import 'package:todo/task_model.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key,}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -33,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Expanded(
                 child: FutureBuilder<List>(
-                    initialData: [],
+                  initialData: [],
                     future: _dbHelper.getTask(),
                     builder: (context, snapshot) {
                       print(snapshot.data!.length);
@@ -41,25 +40,35 @@ class _HomeScreenState extends State<HomeScreen> {
                         separatorBuilder: (context,index){
                           return  Row(
                               children: [
-                                Text(index.toString(),style: TextStyle(fontSize: 16),),
+                                Text((index+1).toString(),style: TextStyle(fontSize: 16),),
                                 SizedBox(
                                   width: 4,
                                 ),
                                 Expanded(
                                   child: TaskCardWidget(
                                     title: snapshot.data![index].title,
+                                    description: snapshot.data![index].description,
                                   ),
                                 ),
                                 SizedBox(
                                   width: 4,
                                 ),
-                                TextButton(
+                                IconButton(
+                                  onPressed: (){
+                                    Navigator.push(
+                                      context, MaterialPageRoute(builder: (_)=>TaskPage(rebuild: rebuild,customer: snapshot.data![index],))
+                                      );
+                                  }, 
+                                  icon: Icon(Icons.edit)
+                                ),
+                                IconButton(
                                     onPressed: () async {
-                                      await _dbHelper.deleteCustomer(
+                                      await _dbHelper.deleteTask(
                                       snapshot.data![index].id);
                                       setState(() {});
                                     },
-                                    child: Text('Delete')),
+                                    icon: Icon(Icons.delete,color: Colors.red,size: 50,),
+                                )
                               ],
                             );
                            },
