@@ -62,38 +62,68 @@ class _TaskPageState extends State<TaskPage> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: TextField(
-                  controller: descriptionEditingController,
-                  decoration: InputDecoration(
-                      hintText: "Enter description for the task....",
-                      border: InputBorder.none),
-                  style: TextStyle(fontSize: 20, color: Color(0xff211551)),
+                child: Container(
+                  height:400,
+                  
+                  decoration: BoxDecoration(
+                   color: Colors.blue,
+                   borderRadius: BorderRadius.circular(20)
+                  ),
+                  child: TextField(maxLines: 10,
+                    controller: descriptionEditingController,
+                    decoration: InputDecoration(
+                    hintText: "Enter description for the task....",
+                    border: InputBorder.none,
+                      ),
+                    style: TextStyle(fontSize: 20, color: Color(0xff211551)),
+                  ),
                 ),
               ),
               // Expanded(
               //   child: SizedBox()
               //   ),
-               Row(
-                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                 children: [
-                   ElevatedButton(
-                    onPressed: () async {
-                      setState(() {
-                        print("data has been created");
-                        //  Navigator.push(context, MaterialPageRoute(builder: (_)=>HomeScreen()));
-                      });
-                      final customer = CustomerModel(
-                        id: random.nextInt(100),
-                        title: titleEditingController.text,
-                        description: descriptionEditingController.text,
-                      );
-                      await DatabaseHelper.instance.insertTask(customer);
-                      Navigator.pop(context);
-                      widget.rebuild();
-                    },
-                    child: Text("Save"),
-                 ),
+              
+             
+            ],
+          ),
+        ),
+        floatingActionButton: Column(
+          
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+              SizedBox(
+                width: 70,
+                child: ElevatedButton(
+                   style:ElevatedButton.styleFrom(
+                        shape:RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                        ) 
+                        
+                      ) ,
+                      onPressed: () async {
+                        setState(() {
+                          print("data has been created");
+                          //  Navigator.push(context, MaterialPageRoute(builder: (_)=>HomeScreen()));
+                        });
+                        final customer = CustomerModel(
+                          id: random.nextInt(100),
+                          title: titleEditingController.text,
+                          description: descriptionEditingController.text,
+                        );
+                        await DatabaseHelper.instance.insertTask(customer);
+                        Navigator.pop(context);
+                        widget.rebuild();
+                      },
+                      child: Text("Save"),
+                   ),
+              ),
                   ElevatedButton(
+                    style:ElevatedButton.styleFrom(
+                      shape:RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)
+                      ) 
+                      
+                    ) ,
                     onPressed:() async{
                       final customer = CustomerModel(
                         id: widget.customer!.id,
@@ -105,29 +135,56 @@ class _TaskPageState extends State<TaskPage> {
                        Navigator.pop(context);
                       widget.rebuild();
                      },
-                     child: Text("Update"), 
+                     child: Text(
+                       "Update",
+                       style: TextStyle(fontSize: 12),
+                     ), 
                    ),
-                 ],
-               ),
-             
-            ],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-          if (widget.customer!=null) {
-            await _dbHelper.deleteTask(
-          widget.customer!.id!);
-          Navigator.pop(context);
-          widget.rebuild();
-          }
-        },
-          backgroundColor: Color(0xFFFE3577),
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          child: Icon(Icons.delete_forever),
+                  SizedBox(width:20),
+            FloatingActionButton(
+              onPressed: () async {
+                // _showDialog(context);
+              if (widget.customer!=null) {
+                await _dbHelper.deleteTask(
+              widget.customer!.id!);
+              Navigator.pop(context);
+              widget.rebuild();
+              }
+            },
+              backgroundColor: Color(0xFFFE3577),
+              shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              child: Icon(Icons.delete_forever),
+            ),
+          ],
         ),
       ),
     );
   }
+}
+_showDialog(BuildContext context){
+  showDialog(
+    barrierDismissible: false,
+  context: context, 
+  builder:(BuildContext context){
+    return AlertDialog(
+    title: Text("alert"),
+    content: Text("This the body of alert dialog"),
+    actions: [
+      TextButton(
+        onPressed: (){
+         
+        }, 
+        child: Text("Yes")
+        ),
+         TextButton(
+        onPressed: (){
+          Navigator.pop(context);
+        }, 
+        child: Text("No")
+        ),
+    ],
+    );
+  } 
+  );
 }
