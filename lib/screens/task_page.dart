@@ -39,37 +39,44 @@ class _TaskPageState extends State<TaskPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: Container(
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Icon(Icons.arrow_back)),
-                  // SizedBox(width: 10,),
-                  Expanded(
-                      child: TextField(
-                    controller: titleEditingController,
-                    decoration: InputDecoration(
-                        hintText: "Enter Task Title",
-                        border: InputBorder.none),
-                    style: TextStyle(fontSize: 26, color: Color(0xff211551)),
-                  )),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Container(
+        backgroundColor: Colors.black,
+        body: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              children: [
+                Container(
+                  
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: Icon(Icons.arrow_back,)),
+                      // SizedBox(width: 10,),
+                      Expanded(
+                          child: TextField(
+                        controller: titleEditingController,
+                        decoration: InputDecoration(
+                            hintText: "Enter Task Title",
+                            border: InputBorder.none),
+                        style: TextStyle(fontSize: 26, color: Color(0xff211551)),
+                      )),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20,),
+                Container(
                   height:400,
                   
                   decoration: BoxDecoration(
                    color: Colors.blue,
                    borderRadius: BorderRadius.circular(20)
                   ),
-                  child: TextField(maxLines: 10,
+                  child: TextField(
+                    maxLines: 10,
                     controller: descriptionEditingController,
                     decoration: InputDecoration(
                     hintText: "Enter description for the task....",
@@ -78,13 +85,66 @@ class _TaskPageState extends State<TaskPage> {
                     style: TextStyle(fontSize: 20, color: Color(0xff211551)),
                   ),
                 ),
-              ),
-              // Expanded(
-              //   child: SizedBox()
-              //   ),
-              
-             
-            ],
+                // Expanded(
+                //   child: SizedBox()
+                //   ),
+                 Column(
+                   children: [
+                     SizedBox(
+                width: 70,
+                child: ElevatedButton(
+                       style:ElevatedButton.styleFrom(
+                            shape:RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)
+                            ) 
+                            
+                          ) ,
+                          onPressed: () async {
+                            setState(() {
+                              print("data has been created");
+                              //  Navigator.push(context, MaterialPageRoute(builder: (_)=>HomeScreen()));
+                            });
+                            final customer = CustomerModel(
+                              id: random.nextInt(100),
+                              title: titleEditingController.text,
+                              description: descriptionEditingController.text,
+                            );
+                            await DatabaseHelper.instance.insertTask(customer);
+                            Navigator.pop(context);
+                            widget.rebuild();
+                          },
+                          child: Text("Save"),
+                       ),
+                     ),
+                      ElevatedButton(
+                    style:ElevatedButton.styleFrom(
+                      shape:RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)
+                      ) 
+                      
+                    ) ,
+                    onPressed:() async{
+                      final customer = CustomerModel(
+                        id: widget.customer!.id,
+                        title: titleEditingController.text,
+                        description: descriptionEditingController.text,
+                      );
+                      await DatabaseHelper.instance.updateTask(customer);
+                      titleEditingController.clear();
+                       Navigator.pop(context);
+                      widget.rebuild();
+                     },
+                     child: Text(
+                       "Update",
+                       style: TextStyle(fontSize: 12),
+                     ), 
+                   ),
+                  SizedBox(width:20),
+                   ],
+                 ),
+               
+              ],
+            ),
           ),
         ),
         floatingActionButton: Column(
